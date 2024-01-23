@@ -1,0 +1,18 @@
+{{ with .Values.route }}
+kind: Route
+apiVersion: {{ template "babibe.route.apiVersion" $ }}
+metadata:
+  name: {{ template "babibe.fullname" $ }}
+  namespace: {{ template "babibe.namespace" $ }}
+  labels: {{ include "babibe.labels" $ | nindent 4}}
+  {{ toYaml .labels | indent 2 }}
+spec:
+  host: {{ .host }}
+  to:
+    kind: Service
+    name: {{ template "babibe.fullname" $ }}
+    weight: {{ .toWeight }}
+  port:
+    targetPort: {{ .targetPort }}
+  tls: {{ toYaml .tls | nindent 4 }}
+{{ end }}

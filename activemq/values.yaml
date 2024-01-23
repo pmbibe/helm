@@ -1,0 +1,46 @@
+forceNamespace: 
+fullnameOverride:
+nameOverride:
+name: 
+environment: 
+service:
+  name: 
+  ports: {}
+  type: 
+deployment:
+  replicas: 1
+  name: 
+  container:
+    name: 
+    image: 
+    ports: {}
+    resources:
+      limits:
+        cpu: 
+        memory: 
+      requests:
+        cpu: 
+        memory: 
+    imagePullPolicy: IfNotPresent
+    securityContext: []
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+imageStream:
+  name: 
+  lookupPolicy:
+    local: false
+route:
+  name: 
+  host: 
+  to:
+    kind: 
+    name: 
+    weight: 
+  port: 
+  tls:
+    termination: 
+    insecureEdgeTerminationPolicy: 
+  wildcardPolicy:

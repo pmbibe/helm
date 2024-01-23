@@ -1,0 +1,30 @@
+{{ if .Values.routes }}
+{{- range $route := .Values.routes }}
+kind: Route
+apiVersion: {{ template "pmbibe-edge.route.apiVersion" $ }}
+metadata:
+  name: {{ $route.name }}
+  namespace: {{ template "pmbibe-edge.namespace" $ }}
+  labels:
+    {{ include "pmbibe-edge.labels" $ }}
+spec:
+  host: {{ $route.host }}
+  to:
+    kind: Service
+    name: {{ $route.serviceName }}
+    port:
+      targetPort: {{ $route.serviceTargetPort }}
+  {{- if $route.alterBackends }}
+  alternateBackends:
+  {{- range $alterBackend := $route.alterBackends }}
+    - kind: Service
+      name: {{ $alterBackend.name }}
+      weight: {{ $alterBackend.weight }}
+      port:
+        targetPort: {{ $alterBackend.targetPort }}
+  {{- end }}
+  {{- end }}
+  tls: {{ toYaml $route.tls | nindent 4 }}
+  wildcardPolicy: {{ $route.wildcardPolicy }}
+{{- end -}}
+{{- end -}}

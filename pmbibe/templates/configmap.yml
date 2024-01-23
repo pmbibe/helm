@@ -1,0 +1,11 @@
+{{- if .Values.configMap -}}
+{{ range $configMap := .Values.configMap }}
+kind: ConfigMap
+apiVersion: {{ template "pmbibe.configMap.apiVersion" $ }}
+metadata:
+  name: {{ $configMap.name }}
+  namespace: {{ template "pmbibe.namespace" $ }}
+data: {{ toYaml $configMap.data | nindent 4 }}
+---
+{{- end }}
+{{- end -}}

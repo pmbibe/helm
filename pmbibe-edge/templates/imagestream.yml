@@ -1,0 +1,12 @@
+{{- if .Values.imageStreams }}
+{{- range $imageStream := .Values.imageStreams }}
+kind: ImageStream
+apiVersion: {{ template "pmbibe-edge.imageStream.apiVersion" }}
+metadata:
+  name: {{ $imageStream.name }}
+  namespace: {{ template "pmbibe-edge.namespace" $ }}
+spec:
+  lookupPolicy: {{ toYaml $imageStream.lookupPolicy | nindent 4 }}  
+---
+{{- end }}
+{{- end -}}

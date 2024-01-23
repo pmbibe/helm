@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: {{ template "activemq.service.apiVersion" . }}
+metadata:
+{{- if not .Values.service.name }}
+  name: {{ template "activemq.fullname" . }}
+{{- else }}
+  name: {{ .Values.service.name }}
+{{- end }}
+  namespace: {{ template "activemq.namespace" . }}
+  labels:
+    {{- include "activemq.labels" . | nindent 4 }}
+spec:
+  ports:
+  {{- range $port, $protocol := .Values.service.ports }}
+    - name: {{ $protocol }}-{{ $port }}
+      protocol: {{ $protocol }}
+      port: {{ $port }}
+      targetPort: {{ $port }}
+  {{- end }}
+  selector:
+    {{- include "activemq.labels" . | nindent 4 }}
+  type: {{ .Values.service.type }}

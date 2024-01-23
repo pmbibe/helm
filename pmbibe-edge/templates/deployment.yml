@@ -1,0 +1,83 @@
+kind: Deployment
+apiVersion: {{ template "pmbibe-edge.deployment.apiVersion" . }}
+metadata:
+{{- if not .Values.deployment.name }}
+  name: {{ template "pmbibe-edge.fullName" . }}
+{{- else }}
+  name: {{ .Values.deployment.name }}
+{{- end }}
+  namespace: {{ template "pmbibe-edge.namespace" . }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      {{ template "pmbibe-edge.labels" . }}
+  template:
+    metadata:
+      labels:
+        {{ template "pmbibe-edge.labels" . }}
+    spec:
+    {{- if .Values.volumes }}
+    volumes: {{ template "pmbibe-edge.volumes" . }}
+    {{- end }}
+    containers:
+      {{- range $container := .Values.containers }}
+    {{ print "- " -}}
+      {{- if $container.resources -}}
+      resources: {{ toYaml $container.resources | nindent 8 }}
+      {{- end }}
+      name: {{ $container.name }}
+      image: {{ $container.image }}
+      {{- if $container.command }}
+      command:
+      {{- range $cmd := $container.command }}
+      {{ printf "- %s" $cmd }}
+      {{- end -}}
+      {{- end }}
+      {{- if $container.env }}
+      env:
+      {{- range $env := $container.env }}
+      {{ print "- " -}}
+      {{ printf "name: %s" $env.name }}
+      {{ printf "value: '%s'" $env.value | indent 2 }}
+      {{- end -}}
+      {{- end }}
+      {{- if $container.ports }}
+      ports: {{ toYaml $container.ports | nindent 8 }}
+      {{- end }}
+      {{- if $container.imagePullPolicy }}
+      imagePullPolicy: {{ $container.imagePullPolicy }}
+      {{- end }}
+      {{- if $container.volumeMounts }}
+      volumeMounts:
+      {{- range $volumeMount := $container.volumeMounts }}
+      {{ print "- " }}
+      {{- printf "name: %s" $volumeMount.name }}
+      {{ toYaml $volumeMount.data | indent 2 }}
+      {{- end -}}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.restartPolicy }}
+    restartPolicy: {{ .Values.restartPolicy }}
+    {{- end }}
+    {{- if .Values.securityContext }}
+    securityContext: {{ .Values.securityContext }}
+    {{- end }}
+    {{- if .Values.hostAliases }}
+    hostAliases:
+    {{ range $hostAlias := .Values.hostAliases -}}
+    {{ print "- " -}}
+    {{ printf "ip: %s" $hostAlias.ip }}
+    {{ print "hostnames: " | indent 2 -}}
+    {{ range $hostname := $hostAlias.hostnames }}
+    {{ printf "- %s" $hostname | indent 2 }}
+    {{- end -}}
+    {{ end -}}
+    {{- end }}
+  {{- if .Values.strategy }}
+  strategy: {{ toYaml .Values.strategy | nindent 4 }}
+  {{- if eq .Values.strategy.type "Recreate" }}
+      rollingUpdate: null
+  {{- end -}}
+  {{- end }}
+  

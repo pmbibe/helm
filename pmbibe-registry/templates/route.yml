@@ -1,0 +1,16 @@
+{{ with .Values.route }}
+kind: Route
+apiVersion: {{ template "pmbibe-registry.route.apiVersion" $ }}
+metadata:
+  name: {{ template "pmbibe-registry.fullname" $ }}
+  namespace: {{ template "pmbibe-registry.namespace" $ }}
+spec:
+  host: {{ .host }}
+  to:
+    kind: Service
+    name: {{ template "pmbibe-registry.fullname" $ }}
+    weight: {{ .toWeight }}
+  port:
+    targetPort: {{ .targetPort }}
+  tls: {{ toYaml .tls | nindent 4 }}
+{{ end }}

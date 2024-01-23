@@ -1,0 +1,24 @@
+kind: Route
+apiVersion: {{ template "activemq.route.apiVersion" . }}
+metadata:
+{{- if not .Values.route.name }}
+  name: {{ template "activemq.fullname" . }}
+{{- else }}
+  name: {{ .Values.route.name }}
+{{- end }}
+  namespace: {{ template "activemq.namespace" . }}
+  labels:
+    {{- include "activemq.labels" . | nindent 4 }}
+spec:
+  host: {{ .Values.route.host }}
+  to:
+{{ toYaml .Values.route.to | indent 4 }}
+  port:
+    targetPort: {{ .Values.route.port }}
+{{- if .Values.route.tls }}
+  tls:
+{{ toYaml .Values.route.tls | indent 4 }}
+{{- end}}
+{{- if .Values.route.wildcardPolicy }}
+  wildcardPolicy: {{ .Values.route.wildcardPolicy }}
+{{- end -}}

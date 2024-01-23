@@ -1,0 +1,84 @@
+name: 
+fullnameOverride:
+nameOverride:
+environment: 
+forceNamespace:
+deployment:
+  name: 
+  replicas: 1
+volumes:
+  - name: 
+    data:
+      emptyDir: {} 
+  - name: 
+    data:
+      configMap:
+        name: 
+        defaultMode: 420  
+containers:
+  - name: 
+    image: 
+    command:
+      - 
+    env:
+      - name: 
+        value: !
+    args:
+    workingDir:
+    resources:
+      limits:
+        cpu: 200m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 768Mi
+    ports:
+      - containerPort: 8080
+        protocol: TCP
+    imagePullPolicy: Always
+    volumeMounts:
+      - name: 
+        data:
+          mountPath: 
+restartPolicy: Always
+securityContext: []
+hostAliases:
+  - ip: 
+    hostnames:
+      - 
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 25%
+    maxSurge: 25%
+imageStreams:
+  - name: 
+    lookupPolicy: 
+      local: false
+routes:
+  - name: 
+    host: 
+    serviceName: 
+    serviceWeight: 100
+    serviceTargetPort: 8080
+    # alterBackends:
+    #   - name:
+    #     weight:
+    #     targetPort:
+    tls:
+      termination: 
+      insecureEdgeTerminationPolicy: Allow
+    wildcardPolicy: None
+service:
+  name: 
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+  - name: 
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  clusterIP:
+  externalIPs:
+  externalName:
+  nodePort:

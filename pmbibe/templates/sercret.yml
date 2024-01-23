@@ -1,0 +1,12 @@
+{{- if .Values.secrets -}}
+{{- range $secret := .Values.secrets }}
+kind: Secret
+apiVersion: {{ template "pmbibe.secret.apiVersion" $ }}
+metadata:
+  name: {{ $secret.name }}
+  namespace: {{ template "pmbibe.namespace" $ }}
+data: {{- toYaml $secret.data | nindent 2}}
+type: {{- $secret.type | indent 1 }}
+---
+{{- end }}
+{{- end }}

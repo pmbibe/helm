@@ -1,0 +1,151 @@
+name: 
+nameOverride:
+fullnameOverride:
+environment: 
+forceNamespace:
+deployment:
+  name: 
+  replicas: 1
+  template:
+    restartPolicy: 
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          preference:
+            matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                - 
+    securityContext: []
+    initContainers:
+      - name: 
+        image: 
+        command:
+          - 
+        args:
+          - 
+        imagePullPolicy: IfNotPresent
+      - name: 
+        image: 
+        command:
+          - 
+        args:
+          - 
+        imagePullPolicy: IfNotPresent
+    containers:
+      - resources:
+          limits:
+            cpu: 50m
+            memory: 250Mi
+          requests:
+            cpu: 50m
+            memory: 250Mi
+        name: 
+        command:
+        - 
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: 
+          mountPath: 
+        - name: 
+          mountPath: 
+        - name: 
+          mountPath:
+          subPath:
+        image: 
+        args:
+          -
+      - resources:
+          limits:
+            cpu: 200m
+            memory: 1Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+        lifecycle:
+          preStop:
+            exec:
+              command:
+                -
+        name: 
+        command:
+          - 
+        env:
+          - name: 
+            valueFrom:
+              secretKeyRef:
+                name: 
+                key: 
+          - name: 
+            value: 
+        imagePullPolicy: Always
+        startupProbe:
+          exec:
+            command:
+              -
+          initialDelaySeconds: 60
+          timeoutSeconds: 3
+          periodSeconds: 15
+          successThreshold: 1
+          failureThreshold: 50
+        volumeMounts:
+          - name: 
+            mountPath: 
+          - name: 
+            mountPath: 
+            subPath: 
+        terminationMessagePolicy: File
+        image: 
+        workingDir: 
+        args:
+          - 
+    hostAliases:
+      - ip: 
+        hostname: 
+          - 
+      - ip: 
+        hostnames:
+          - 
+    volumes:
+      - name: 
+        emptyDir: {}
+      - name: 
+        emptyDir: {}
+      - name: 
+        configMap:
+          name: 
+          defaultMode: 420
+    dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+imageStream:
+  - name: 
+    lookupPolicy:
+      local: false
+  - name: 
+    lookupPolicy:
+      local: false
+  - name: 
+    lookupPolicy:
+      local: false
+
+
+
+secrets:
+  - name: 
+    data:
+    type: 
+
+configMap:
+  - name: 
+    data: 
+  - name:
+    data:
+  - name: 
+    data:
+

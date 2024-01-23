@@ -1,0 +1,24 @@
+{{- if .Values.ingress -}}
+{{ $serviceName := include "babibe.fullname" $ }}
+kind: Ingress
+apiVersion: {{ template "babibe.ingress.apiVersion" . }}
+metadata:
+  name: {{ template "babibe.fullname" . }}
+  namespace: {{ template "babibe.namespace" }}
+  labels: {{ include "babibe.labels" . | nindent 4 }}
+spec:
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- range $rule := .Values.ingressRules }}
+  rules:
+    - host: {{ $rule.host }}
+      http:
+        {{- range $path := $rule.paths }}
+        paths:
+          - path: {{ $path.path }}
+            pathType: {{ $path.pathType }}
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $path.servicePort }}
+        {{- end -}} 
+  {{- end -}}  
+{{- end -}}  

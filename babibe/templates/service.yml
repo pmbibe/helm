@@ -1,0 +1,25 @@
+{{- with .Values.service }}
+kind: Service
+apiVersion: {{ template "babibe.service.apiVersion" $ }}
+metadata:
+  name: {{ template "babibe.fullname" $ }}
+  namespace: {{ template "babibe.namespace" $ }}
+  labels: {{ include "babibe.labels" $ | nindent 4 }}
+  {{ toYaml .labels | indent 2 }}
+spec:
+{{- if .clusterIP }}
+  clusterIP: {{ .clusterIP }}
+{{- end }}
+{{- if .externalIPs }}
+  externalIPs: {{ toYaml .externalIPs | nindent 4 }}
+{{- end }}
+{{- if .externalName }}
+  externalName: {{ .externalName }}
+{{- end }}
+  ports: {{ toYaml .ports | nindent 4 }}
+  selector: {{ include "babibe.selectorLabels" $ | nindent 4 }}
+  type: {{ .type }}
+  {{- if .sessionAffinity }}
+  sessionAffinity: {{ .sessionAffinity }}
+  {{- end }}
+{{- end }}

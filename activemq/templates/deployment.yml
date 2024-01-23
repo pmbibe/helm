@@ -1,0 +1,40 @@
+kind: Deployment
+apiVersion: {{ template "activemq.deployment.apiVersion" . }}
+metadata:
+  labels:
+    {{- include "activemq.labels" . | nindent 4 }}
+{{- if not .Values.deployment.name }}
+  name: {{ template "activemq.fullname" . }}
+{{- else }}
+  name: {{ .Values.deployment.name }}
+{{- end }}
+  namespace: {{ template "activemq.namespace" . }}
+spec: 
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      {{- include "activemq.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "activemq.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.deployment.container.name }} 
+          image: {{ .Values.deployment.container.image }}
+          ports:
+          {{- range $containerPort, $protocol := .Values.deployment.container.ports }}
+            - containerPort: {{ $containerPort }} 
+              protocol: {{ upper $protocol}}    
+          {{- end }}
+          {{- with .Values.deployment.container.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}          
+          imagePullPolicy: {{ .Values.deployment.container.imagePullPolicy }}
+      securityContext: {{ .Values.deployment.container.securityContext }}
+  {{- if .Values.deployment.strategy }}
+  strategy:  
+{{ toYaml .Values.deployment.strategy | trim | indent 4 }}
+    {{ if eq .Values.deployment.strategy.type "Recreate" }}rollingUpdate: null{{ end }}
+  {{- end }}

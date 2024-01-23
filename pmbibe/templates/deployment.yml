@@ -1,0 +1,57 @@
+kind: Deployment
+apiVersion: {{ template "pmbibe.deployment.apiVersion" . }}
+metadata:
+{{- if not .Values.deployment.name }}
+  name: {{ template "pmbibe.fullName" . }}
+{{- else -}}
+  name: {{ .Values.deployment.name }}
+{{- end }}
+  namespace: {{ template "pmbibe.namespace" . }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      {{- include "pmbibe.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pmbibe.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: {{ .Values.deployment.template.restartPolicy }}
+    {{- if .Values.deployment.template.initContainers }}
+      initContainers:
+        {{- range $key, $value := .Values.deployment.template.initContainers -}}
+        - name: {{ $key }}
+          image: {{ $value.image }}
+          command:
+          {{ toYaml $value.command }}
+          args:
+            {{ toYaml $value.args }}
+          imagePullPolicy: {{ toYaml $value.imagePullPolicy}}
+        {{- end -}}
+    {{- end }}
+    {{- if .Values.deployment.template.affinity }}
+      affinity:
+        {{- toYaml .Values.deployment.template.affinity | nindent 8 }}
+    {{- end }}
+      securityContext: {{ .Values.deployment.template.securityContext }}
+      containers:
+      {{- include "pmbibe.template.container" . | nindent 8}}
+      {{- if .Values.deployment.template.hostAliases }}
+      hostAliases:
+      {{- include "pmbibe.deployment.hostAliases" . | nindent 6 }}
+      {{- end }}
+      {{- if .Values.deployment.template.volumes -}}
+      volumes:
+      {{- include "pmbibe.deployment.volumes" . | indent 6 }}
+      {{- end }}
+      {{- if .Values.deployment.template.dnsPolicy }}
+      dnsPolicy: {{ .Values.deployment.template.dnsPolicy }}
+      {{- end }}
+    {{- if .Values.deployment.strategy }} 
+  stratery:
+{{ toYaml .Values.deployment.strategy | trim | indent 4 }}
+    {{- if eq .Values.deployment.strategy.type "Recreate" }}
+    rollingUpdate: null
+    {{ end }}
+  {{- end }}

@@ -1,0 +1,70 @@
+name: 
+nameOverride: 
+fullnameOverride:
+additionalLabels:
+forceNamespace:
+environtment: 
+deployment:
+  replicas: 1
+containers:
+  - name: 
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    image:
+      repository: 
+      tag: 
+      digest:
+    ports:
+      - containerPort: 8080
+        protocol: TCP
+    imagePullPolicy: IfNotPresent  
+restartPolicy: Always
+securityContext: {}
+hostAliases:
+  - ip: 
+    hostnames:
+      - 
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 25%
+    maxSurge: 25%
+imageStreams:
+  - name: 
+    lookupPolicy:
+      local: false
+route:
+  labels:
+    module: 
+  host: 
+  toWeight: 100
+  targetPort: 8080
+  tls:
+    termination: 
+    insecureEdgeTerminationPolicy: Allow
+  wildcardPolicy: None
+service:
+  labels:
+    module: 
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+  clusterIP:
+  externalIPs:
+  externalName:
+  sessionAffinity: None
+ingress:
+  ingressClassName: contour
+ingressRules:
+  - host:
+    paths:
+      - path: /
+        pathType: ImplementationSpecific
+        servicePort: 8080

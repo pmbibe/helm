@@ -1,0 +1,14 @@
+kind: ImageStream
+apiVersion: {{ template "activemq.imagestream.apiVersion" .}}
+metadata:
+{{- if not .Values.imageStream.name }}
+  name: {{ template "activemq.fullname" . }}
+{{- else }}
+  name: {{ .Values.imageStream.name }}
+{{- end }}
+  namespace: {{ template "activemq.namespace" . }}
+spec:
+  {{- if .Values.imageStream.lookupPolicy }}
+  lookupPolicy:
+{{ toYaml .Values.imageStream.lookupPolicy | indent 4 }}
+  {{- end}}

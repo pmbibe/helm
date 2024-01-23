@@ -1,0 +1,25 @@
+{{- with .Values.service }}
+kind: Service
+apiVersion: {{ template "pmbibe-registry.service.apiVersion" $ }}
+metadata:
+  name: {{ template "pmbibe-registry.fullname" $ }}
+  namespace: {{ template "pmbibe-registry.namespace" $ }}
+  labels: {{ toYaml .labels | nindent 4 }}
+    {{ include "pmbibe-registry.labels" . | nindent 8 }}
+spec:
+{{- if .clusterIP }}
+  clusterIP: {{ .clusterIP }}
+{{- end }}
+{{- if .externalIPs }}
+  externalIPs: {{ toYaml .externalIPs | nindent 4 }}
+{{- end }}
+{{- if .externalName }}
+  externalName: {{ .externalName }}
+{{- end }}
+  ports: {{ toYaml .ports | nindent 4 }}
+  selector: {{ include "pmbibe-registry.selectorLabels" $ | nindent 4 }}
+  type: {{ .type }}
+  {{- if .sessionAffinity }}
+  sessionAffinity: {{ .sessionAffinity }}
+  {{- end }}
+{{- end }}
